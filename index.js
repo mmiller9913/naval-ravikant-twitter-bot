@@ -31,13 +31,14 @@ function connectToGoogleSheet(){
     if(err) {
         console.log(err);
     } else {
-        console.log('connected');
+        console.log('Connected to Google Sheet');
         getDataFromGoogleSheets(client);
     }
     })
 }
 
 async function getDataFromGoogleSheets(cl) {
+console.log('Getting data from Google Sheet');
   const gsapi = google.sheets({
     version:'v4',
     auth: cl,
@@ -62,6 +63,7 @@ async function getDataFromGoogleSheets(cl) {
 }
 
 function createTweet(combinedTweets) {
+    console.log('Creating tweet');
     let tweet = combinedTweets[Math.floor(Math.random() * combinedTweets.length)].toString().replace(/"/gi, '').replace(/\n\n@naval/gi, '');
     tweet = `${tweet}\n\n@naval`;
     if (tweet.length > 280) {
@@ -71,6 +73,7 @@ function createTweet(combinedTweets) {
   };
 
 function sendTweet(tweet) {
+    console.log('Sending tweet');
     twitterClient.tweets.statusesUpdate({
         status: tweet
     }).then(response => {
