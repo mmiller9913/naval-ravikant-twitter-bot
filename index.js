@@ -67,9 +67,8 @@ function createTweet(combinedTweets) {
     let tweet = combinedTweets[Math.floor(Math.random() * combinedTweets.length)].toString().replace(/"/gi, '').replace(/\n\n@naval/gi, '');
     tweet = `${tweet}\n\n@naval`;
     if (tweet.length > 280) {
-        createTweet();
-    }
-    sendTweet(tweet);
+        createTweet(combinedTweets);
+    } else sendTweet(tweet);
   };
 
 function sendTweet(tweet) {
