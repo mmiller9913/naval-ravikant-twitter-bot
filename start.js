@@ -24,10 +24,10 @@ app.get('/', (req, res) => {
 });
 
 //to keep nodejs app running indefinitely on heroku
-var http = require("http");
-setInterval(function () {
-    http.get("http://naval-ravikant-twitter-bot.herokuapp.com");
-}, 600000); // runs every 10 minutes
+// var http = require("http");
+// setInterval(function () {
+//     http.get("http://naval-ravikant-twitter-bot.herokuapp.com");
+// }, 600000); // runs every 10 minutes
 
 app.set('port', process.env.PORT || 3000);
 const server = app.listen(app.get('port'), () => {
