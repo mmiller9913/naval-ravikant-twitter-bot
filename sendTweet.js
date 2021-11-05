@@ -64,18 +64,32 @@ async function getDataFromGoogleSheets(cl) {
         range: 'sorted_tweets!A2:A',
     };
 
+    const navalPodClipsOptions = {
+        spreadsheetId: '1vtsZKEmpASGPX1ONuZ7W2EzPgjiJn0dxRFIrAgFx3IE',//navalpodclips's tweets
+        range: 'sorted_tweets!A2:A',
+    };
+
     let navalismData = await gsapi.spreadsheets.values.get(navalismOptions);
     let navalData = await gsapi.spreadsheets.values.get(navalOptions);
-    const arrayOfNavalismTweets = navalismData.data.values;
-    const arrayOfNavalTweets = navalData.data.values;
-    const combinedArrayOfTweets = arrayOfNavalismTweets.concat(arrayOfNavalTweets);
+    let navalPodClipsData = await gsapi.spreadsheets.values.get(navalPodClipsOptions);
+    const arrayOfNavalismTweets = navalismData.data.values
+        .map(item => item.toString().replace(/"/gi, '').split()); //getting rid of quotation marks
+    const arrayOfNavalTweets = navalData.data.values
+        .map(item => (item + '\n\n@naval').split()); //adding @naval to the end after a line break
+    const arrayOfNavalPodClipsTweets = navalPodClipsData.data.values
+        .map(item => { //splitting string into two arrays, selecting first array, and adding '\n\n@naval' to the end
+            if (item.toString().includes('\n\n- @naval')) {
+                return (item.toString().split('\n\n- @naval')[0] + '\n\n@naval').split(); 
+            } else return (item.toString().split(' - @naval')[0] + '\n\n@naval').split()
+        });
+    const combinedArrayOfTweets = arrayOfNavalismTweets.concat(arrayOfNavalTweets).concat(arrayOfNavalPodClipsTweets);
     createTweet(combinedArrayOfTweets);
 }
 
 function createTweet(combinedTweets) {
     console.log('Creating tweet');
-    let tweet = combinedTweets[Math.floor(Math.random() * combinedTweets.length)].toString().replace(/"/gi, '').replace(/\n\n@naval/gi, '');
-    tweet = `${tweet}\n\n@naval`;
+    //OLD
+    let tweet = combinedTweets[Math.floor(Math.random() * combinedTweets.length)].toString();
     if (tweet.length > 280) {
         createTweet(combinedTweets);
     } else sendTweet(tweet);
